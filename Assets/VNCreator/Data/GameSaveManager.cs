@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace VNCreator
+namespace VNCreator.VNCreator.Data
 {
     public static class GameSaveManager
     {
@@ -23,11 +22,11 @@ namespace VNCreator
                 return null;
             }
 
-            string _loadString = PlayerPrefs.GetString(currentLoadName);
-            List<string> _loadList = _loadString.Split('_').ToList();
-            _loadList.RemoveAt(_loadList.Count - 1);
+            var loadString = PlayerPrefs.GetString(currentLoadName);
+            var loadList = loadString.Split('_').ToList();
+            loadList.RemoveAt(loadList.Count - 1);
             currentLoadName = loadName;
-            return _loadList;
+            return loadList;
         }
 
         public static List<string> Load()
@@ -43,15 +42,15 @@ namespace VNCreator
                 return null;
             }
 
-            string _loadString = PlayerPrefs.GetString(currentLoadName);
-            List<string> _loadList = _loadString.Split('_').ToList();
-            return _loadList;
+            var loadString = PlayerPrefs.GetString(currentLoadName);
+            var loadList = loadString.Split('_').ToList();
+            return loadList;
         }
 
         public static void Save(List<string> storyPath)
         {
-            string _save = string.Join("_", storyPath.ToArray());
-            PlayerPrefs.SetString(currentLoadName, _save);
+            var save = string.Join("_", storyPath.ToArray());
+            PlayerPrefs.SetString(currentLoadName, save);
         }
 
         public static void NewLoad(string saveName)

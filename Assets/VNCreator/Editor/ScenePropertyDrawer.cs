@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
+using VNCreator.VNCreator.Misc;
 
-namespace VNCreator
+namespace VNCreator.VNCreator.Editor
 {
 #if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(SceneAttribute))]
@@ -11,8 +10,8 @@ namespace VNCreator
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            SceneAsset sceneObject = AssetDatabase.LoadAssetAtPath<SceneAsset>(property.stringValue);
-            SceneAsset scene = (SceneAsset)EditorGUI.ObjectField(position, label, sceneObject, typeof(SceneAsset), true);
+            var sceneObject = AssetDatabase.LoadAssetAtPath<SceneAsset>(property.stringValue);
+            var scene = (SceneAsset)EditorGUI.ObjectField(position, label, sceneObject, typeof(SceneAsset), true);
             property.stringValue = AssetDatabase.GetAssetPath(scene);
         }
     }

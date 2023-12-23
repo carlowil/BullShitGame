@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
-using VNCreator.Editors;
+using VNCreator.VNCreator.Data;
 
-namespace VNCreator
+namespace VNCreator.VNCreator.Editor.Windows
 {
 #if UNITY_EDITOR
     [CustomEditor(typeof(StoryObject))]
-    public class StoryObjectEditor : Editor
+    public class StoryObjectEditor : UnityEditor.Editor
     {
 
         public override void OnInspectorGUI()

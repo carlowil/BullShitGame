@@ -1,108 +1,105 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-#if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
-#endif
-using UnityEngine;
 using UnityEngine.UIElements;
-using VNCreator.Editors.Graph;
+using VNCreator.VNCreator.Editor.Graph;
+using VNCreator.VNCreator.Editor.Graph.Node;
+#if UNITY_EDITOR
+#endif
 
-namespace VNCreator
+namespace VNCreator.VNCreator.Data
 {
     public class SaveUtility
     {
 #if UNITY_EDITOR
-        public void SaveGraph(StoryObject _story, ExtendedGraphView _graph)
+        public static void SaveGraph(StoryObject story, ExtendedGraphView graph)
         {
-            EditorUtility.SetDirty(_story);
+            EditorUtility.SetDirty(story);
 
-            List<NodeData> nodes = new List<NodeData>();
-            List<Link> links = new List<Link>();
+            var links = new List<Link>();
 
-            foreach (BaseNode _node in _graph.nodes.ToList().Cast<BaseNode>().ToList())
+            var nodes = graph.nodes.ToList()
+                .Cast<BaseNode>()
+                .ToList()
+                .Select(node => new NodeData
+                {
+                    guid = node.nodeData.guid,
+                    characterSpr = node.nodeData.characterSpr,
+                    characterName = node.nodeData.characterName,
+                    dialogueText = node.nodeData.dialogueText,
+                    backgroundSpr = node.nodeData.backgroundSpr,
+                    startNode = node.nodeData.startNode,
+                    endNode = node.nodeData.endNode,
+                    choices = node.nodeData.choices,
+                    choiceOptions = node.nodeData.choiceOptions,
+                    nodePosition = node.GetPosition(),
+                    soundEffect = node.nodeData.soundEffect,
+                    backgroundMusic = node.nodeData.backgroundMusic
+                })
+                .ToList();
+
+            var edges = graph.edges.ToList();
+            for (var i = 0; i < edges.Count; i++)
             {
-                    nodes.Add(
-                    new NodeData
-                    {
-                        guid = _node.nodeData.guid,
-                        characterSpr = _node.nodeData.characterSpr,
-                        characterName = _node.nodeData.characterName,
-                        dialogueText = _node.nodeData.dialogueText,
-                        backgroundSpr = _node.nodeData.backgroundSpr,
-                        startNode = _node.nodeData.startNode,
-                        endNode = _node.nodeData.endNode,
-                        choices = _node.nodeData.choices,
-                        choiceOptions = _node.nodeData.choiceOptions,
-                        nodePosition = _node.GetPosition(),
-                        soundEffect = _node.nodeData.soundEffect,
-                        backgroundMusic = _node.nodeData.backgroundMusic
-                    });
-            }
-
-            List<Edge> _edges = _graph.edges.ToList();
-            for (int i = 0; i < _edges.Count; i++)
-            {
-                BaseNode _output = (BaseNode)_edges[i].output.node;
-                BaseNode _input = (BaseNode)_edges[i].input.node;
+                var output = (BaseNode)edges[i].output.node;
+                var input = (BaseNode)edges[i].input.node;
 
                 links.Add(new Link 
                 { 
-                    guid = _output.nodeData.guid,
-                    targetGuid = _input.nodeData.guid,
+                    guid = output.nodeData.guid,
+                    targetGuid = input.nodeData.guid,
                     portId = i
                 });
             }
 
-            _story.SetLists(nodes, links);
+            story.SetLists(nodes, links);
 
             //_story.nodes = nodes;
             //_story.links = links;
         }
 
-        public void LoadGraph(StoryObject _story, ExtendedGraphView _graph)
+        public void LoadGraph(StoryObject story, ExtendedGraphView graph)
         {
-            foreach (NodeData _data in _story.nodes)
+            foreach (var tempNode in story.nodes.Select(data => graph.CreateNode("", data.nodePosition.position, data.choices, data.choiceOptions, data.startNode, data.endNode, data)))
             {
-                BaseNode _tempNode = _graph.CreateNode("", _data.nodePosition.position, _data.choices, _data.choiceOptions, _data.startNode, _data.endNode, _data);
-                _graph.AddElement(_tempNode);
+                graph.AddElement(tempNode);
             }
 
-            GenerateLinks(_story, _graph);
+            GenerateLinks(story, graph);
         }
 
-        void GenerateLinks(StoryObject _story, ExtendedGraphView _graph)
+        private void GenerateLinks(StoryObject story, ExtendedGraphView graph)
         {
-            List<BaseNode> _nodes = _graph.nodes.ToList().Cast<BaseNode>().ToList();
+            var nodes = graph.nodes.ToList().Cast<BaseNode>().ToList();
 
-            for (int i = 0; i < _nodes.Count; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
-                int _outputIdx = 1;
-                List<Link> _links = _story.links.Where(x => x.guid == _nodes[i].nodeData.guid).ToList();
-                for (int j = 0; j < _links.Count; j++)
+                var outputIdx = 1;
+                var links = story.links.Where(x => x.guid == nodes[i].nodeData.guid).ToList();
+                for (var j = 0; j < links.Count; j++)
                 {
-                    string targetGuid = _links[j].targetGuid;
-                    BaseNode _target = _nodes.First(x => x.nodeData.guid == targetGuid);
-                    LinkNodes(_nodes[i].outputContainer[_links.Count > 1 ? _outputIdx : 0].Q<Port>(), (Port)_target.inputContainer[0], _graph);
-                    _outputIdx += 2;
+                    var targetGuid = links[j].targetGuid;
+                    var target = nodes.First(x => x.nodeData.guid == targetGuid);
+                    LinkNodes(nodes[i].outputContainer[links.Count > 1 ? outputIdx : 0].Q<Port>(), (Port)target.inputContainer[0], graph);
+                    outputIdx += 2;
                 }
             }
         }
 
-        void LinkNodes(Port _output, Port _input, ExtendedGraphView _graph)
+        private static void LinkNodes(Port output, Port input, ExtendedGraphView graph)
         {
             //Debug.Log(_output);
 
-            Edge _temp = new Edge
+            var temp = new Edge
             {
-                output = _output,
-                input = _input
+                output = output,
+                input = input
             };
 
-            _temp.input.Connect(_temp);
-            _temp.output.Connect(_temp);
-            _graph.Add(_temp);
+            temp.input.Connect(temp);
+            temp.output.Connect(temp);
+            graph.Add(temp);
         }
 #endif
     }

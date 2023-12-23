@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-#if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
-#endif
 using UnityEngine;
 using UnityEngine.UIElements;
+using VNCreator.VNCreator.Data;
+using VNCreator.VNCreator.Editor.Graph.Node;
+#if UNITY_EDITOR
+#endif
 
-namespace VNCreator.Editors.Graph
+namespace VNCreator.VNCreator.Editor.Graph
 {
 #if UNITY_EDITOR
     public class ExtendedGraphView : GraphView
     {
-        private Vector2 mousePosition = new Vector2();
+        private Vector2 _mousePosition;
 
         public ExtendedGraphView()
         {
@@ -28,79 +28,81 @@ namespace VNCreator.Editors.Graph
             grid.StretchToParentSize();
         }
 
-        public void GenerateNode(string _nodeName, Vector2 _mousePos, int choiceAmount, bool _startNode, bool _endNode)
+        public void GenerateNode(string nodeName, Vector2 mousePos, int choiceAmount, bool startNode, bool endNode)
         {
-            AddElement(CreateNode(_nodeName, _mousePos, choiceAmount, _startNode, _endNode));
+            AddElement(CreateNode(nodeName, mousePos, choiceAmount, startNode, endNode));
         }
 
-        public BaseNode CreateNode(string _nodeName, Vector2 _mousePos, int choiceAmount, bool _startNode, bool _endNode)
+        private BaseNode CreateNode(string nodeName, Vector2 mousePos, int choiceAmount, bool startNode, bool endNode)
         {
-            return CreateNode(_nodeName, _mousePos, choiceAmount, new string[choiceAmount].ToList(), _startNode, _endNode, new NodeData());
+            return CreateNode(nodeName, mousePos, choiceAmount, new string[choiceAmount].ToList(), startNode, endNode, new NodeData());
         }
 
-        public BaseNode CreateNode(string _nodeName, Vector2 _mousePos, int choiceAmount, List<string> _choices, bool _startNode, bool _endNode, NodeData _data)
+        public BaseNode CreateNode(string nodeName, Vector2 mousePos, int choiceAmount, List<string> choices, bool startNode, bool endNode, NodeData data)
         {
-            BaseNode _node = new BaseNode(_data);
-
-            _node.title = _nodeName;
-            _node.SetPosition(new Rect((new Vector2(viewTransform.position.x, viewTransform.position.y) * -(1 / scale)) + (_mousePos * (1/scale)), Vector2.one));
-            _node.nodeData.startNode = _startNode;
-            _node.nodeData.endNode = _endNode;
-            _node.nodeData.choices = choiceAmount;
-            _node.nodeData.choiceOptions = _choices;
-
-            if (!_startNode)
+            var node = new BaseNode(data)
             {
-                Port _inputPort = CreatePort(_node, Direction.Input, Port.Capacity.Multi);
-                _inputPort.portName = "Input";
-                _node.inputContainer.Add(_inputPort);
+                title = nodeName
+            };
+
+            node.SetPosition(new Rect((new Vector2(viewTransform.position.x, viewTransform.position.y) * -(1 / scale)) + (mousePos * (1/scale)), Vector2.one));
+            node.nodeData.startNode = startNode;
+            node.nodeData.endNode = endNode;
+            node.nodeData.choices = choiceAmount;
+            node.nodeData.choiceOptions = choices;
+
+            if (!startNode)
+            {
+                var inputPort = CreatePort(node, Direction.Input, Port.Capacity.Multi);
+                inputPort.portName = "Input";
+                node.inputContainer.Add(inputPort);
             }
 
-            if (!_endNode)
+            if (!endNode)
             {
                 if (choiceAmount > 1)
                 {
-                    for (int i = 0; i < choiceAmount; i++)
+                    for (var i = 0; i < choiceAmount; i++)
                     {
-                        Port _outputPort = CreatePort(_node, Direction.Output, Port.Capacity.Single);
-                        _outputPort.portName = "Choice " + (i + 1);
+                        var outputPort = CreatePort(node, Direction.Output, Port.Capacity.Single);
+                        outputPort.portName = "Choice " + (i + 1);
 
                         //_node.nodeData.choiceOptions.Add(_node.nodeData.choiceOptions[i]);
 
-                        string _value = _data.choiceOptions.Count == 0 ? "Choice " + (i + 1) : _node.nodeData.choiceOptions[i];
-                        int _idx = i;
+                        var value = data.choiceOptions.Count == 0 ? "Choice " + (i + 1) : node.nodeData.choiceOptions[i];
+                        var idx = i;
 
-                        TextField _field = new TextField { value = _value };
-                        _field.RegisterValueChangedCallback(
-                            e =>
+                        var field = new TextField { value = value };
+                        field.RegisterValueChangedCallback(
+                            _ =>
                             {
-                                _node.nodeData.choiceOptions[_idx] = _field.value;
+                                node.nodeData.choiceOptions[idx] = field.value;
                             }
                             );
 
-                        _node.outputContainer.Add(_field);
-                        _node.outputContainer.Add(_outputPort);
+                        node.outputContainer.Add(field);
+                        node.outputContainer.Add(outputPort);
                     }
                 }
                 else
                 {
-                    Port _outputPort = CreatePort(_node, Direction.Output, Port.Capacity.Single);
-                    _outputPort.portName = "Next";
-                    _node.outputContainer.Add(_outputPort);
+                    var outputPort = CreatePort(node, Direction.Output, Port.Capacity.Single);
+                    outputPort.portName = "Next";
+                    node.outputContainer.Add(outputPort);
                 }
             }
             
-            _node.mainContainer.Add(_node.visuals);
+            node.mainContainer.Add(node.visuals);
 
-            _node.RefreshExpandedState();
-            _node.RefreshPorts();
+            node.RefreshExpandedState();
+            node.RefreshPorts();
 
-            return _node;
+            return node;
         }
 
-        Port CreatePort(BaseNode _node, Direction _portDir, Port.Capacity _capacity)
+        private static Port CreatePort(BaseNode node, Direction portDir, Port.Capacity capacity)
         {
-            return _node.InstantiatePort(Orientation.Horizontal, _portDir, _capacity, typeof(float));
+            return node.InstantiatePort(Orientation.Horizontal, portDir, capacity, typeof(float));
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -115,9 +117,9 @@ namespace VNCreator.Editors.Graph
             return compatiblePorts;
         }
 
-        void MousePos(Vector2 _v2)
+        private void MousePos(Vector2 v2)
         {
-            mousePosition = _v2;
+            _mousePosition = v2;
         }
     }
 #endif

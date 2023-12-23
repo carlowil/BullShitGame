@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-namespace VNCreator
+namespace VNCreator.VNCreator.Data
 {
     [CreateAssetMenu(fileName = "New Story", menuName = "New Story")]
     public class StoryObject : ScriptableObject
@@ -9,60 +10,48 @@ namespace VNCreator
         [HideInInspector] public List<Link> links;
         [HideInInspector] public List<NodeData> nodes;
 
-        public void SetLists(List<NodeData> _nodes, List<Link> _links)
+        public void SetLists(List<NodeData> nodes, List<Link> links)
         {
-            links = new List<Link>();
-            for (int i = 0; i < _links.Count; i++)
+            this.links = new List<Link>();
+            foreach (var t in links)
             {
-                links.Add(_links[i]);
+                this.links.Add(t);
             }
 
-            nodes = new List<NodeData>();
-            for (int i = 0; i < _nodes.Count; i++)
+            this.nodes = new List<NodeData>();
+            
+            foreach (var t in nodes)
             {
-                nodes.Add(_nodes[i]);
+                this.nodes.Add(t);
             }
         }
 
         public NodeData GetFirstNode()
         {
-            for (int i = 0; i < nodes.Count; i++)
+            foreach (var t in nodes.Where(t => t.startNode))
             {
-                if (nodes[i].startNode)
-                {
-                    return nodes[i];
-                }
+                return t;
             }
 
             Debug.LogError("You need a start node");
             return null;
         }
-        public NodeData GetCurrentNode(string _currentGuid)
+        public NodeData GetCurrentNode(string currentGuid)
         {
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                if (nodes[i].guid == _currentGuid)
-                    return nodes[i];
-            }
-
-            return null;
+            return nodes.FirstOrDefault(t => t.guid == currentGuid);
         }
 
-        List<Link> _tempLinks = new List<Link>();
-        public NodeData GetNextNode(string _currentGuid, int _choiceId)
+        private List<Link> _tempLinks = new();
+        public NodeData GetNextNode(string currentGuid, int choiceId)
         {
             _tempLinks = new List<Link>();
 
-            for (int i = 0; i < links.Count; i++)
+            foreach (var t in links.Where(t => t.guid == currentGuid))
             {
-                if (links[i].guid == _currentGuid)
-                    _tempLinks.Add(links[i]);
+                _tempLinks.Add(t);
             }
 
-            if(_choiceId < _tempLinks.Count)
-                return GetCurrentNode(_tempLinks[_choiceId].targetGuid);
-            else
-                return null;
+            return choiceId < _tempLinks.Count ? GetCurrentNode(_tempLinks[choiceId].targetGuid) : null;
         }
     }
 }

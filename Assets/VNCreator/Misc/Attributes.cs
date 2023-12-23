@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace VNCreator
+namespace VNCreator.VNCreator.Misc
 {
     public class SceneAttribute : PropertyAttribute { }
 }

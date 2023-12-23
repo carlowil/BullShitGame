@@ -1,29 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using VNCreator.VNCreator.Data;
 
-namespace VNCreator
+namespace VNCreator.VNCreator.Behaviors
 {
     [RequireComponent(typeof(AudioSource))]
-    public class VNCreator_MusicSource : MonoBehaviour
+    public class VnCreatorMusicSource : MonoBehaviour
     {
-        AudioSource source;
+        private AudioSource _source;
 
-        public static VNCreator_MusicSource instance;
+        public static VnCreatorMusicSource instance;
 
         private void Awake()
         {
             instance = this;
-            source = GetComponent<AudioSource>();
-            source.playOnAwake = false;
-            source.loop = true;
-            source.volume = GameOptions.musicVolume;
+            _source = GetComponent<AudioSource>();
+            _source.playOnAwake = false;
+            _source.loop = true;
+            _source.volume = GameOptions.musicVolume;
         }
 
         public void Play(AudioClip clip)
         {
-            source.clip = clip;
-            source.Play();
+            _source.clip = clip;
+            _source.Play();
         }
     }
 }

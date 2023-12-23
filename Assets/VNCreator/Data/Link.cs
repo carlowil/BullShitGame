@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace VNCreator
+﻿namespace VNCreator.VNCreator.Data
 {
     [System.Serializable]
     public class Link

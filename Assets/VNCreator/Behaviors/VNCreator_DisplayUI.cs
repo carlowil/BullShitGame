@@ -26,7 +26,7 @@ namespace VNCreator
         [Header("End")] public GameObject endScreen;
         [Header("Main menu")] [Scene] public string mainMenu;
 
-        void Start()
+        private void Start()
         {
             nextBtn.onClick.AddListener(delegate { NextNode(0); });
             if (previousBtn != null)
@@ -45,10 +45,10 @@ namespace VNCreator
 
             endScreen.SetActive(false);
 
-            StartCoroutine(DisplayCurrentNode());
+            MyStartCoroutine(DisplayCurrentNode());
         }
 
-        protected override void NextNode(int _choiceId)
+        protected override void NextNode(int choiceId)
         {
             if (lastNode)
             {
@@ -56,11 +56,11 @@ namespace VNCreator
                 return;
             }
 
-            base.NextNode(_choiceId);
-            StartCoroutine(DisplayCurrentNode());
+            base.NextNode(choiceId);
+            MyStartCoroutine(DisplayCurrentNode());
         }
 
-        IEnumerator DisplayCurrentNode()
+        private IEnumerator DisplayCurrentNode()
         {
             characterNameTxt.text = currentNode.characterName;
 
@@ -123,11 +123,11 @@ namespace VNCreator
             }
             else
             {
-                char[] _chars = currentNode.dialogueText.ToCharArray();
-                string fullString = string.Empty;
-                for (int i = 0; i < _chars.Length; i++)
+                var chars = currentNode.dialogueText.ToCharArray();
+                var fullString = string.Empty;
+                foreach (var c in chars)
                 {
-                    fullString += _chars[i];
+                    fullString += c;
                     dialogueTxt.text = fullString;
                     yield return new WaitForSeconds(0.01f / GameOptions.readSpeed);
                 }
@@ -137,12 +137,25 @@ namespace VNCreator
         protected override void Previous()
         {
             base.Previous();
-            StartCoroutine(DisplayCurrentNode());
+            MyStartCoroutine(DisplayCurrentNode());
         }
 
-        void ExitGame()
+        private void ExitGame()
         {
             SceneManager.LoadScene(mainMenu, LoadSceneMode.Single);
+        }
+
+        private IEnumerator _coroutine;
+        
+        private void MyStartCoroutine(IEnumerator routine)
+        {
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+            }
+
+            _coroutine = routine;
+            StartCoroutine(routine);
         }
     }
 }

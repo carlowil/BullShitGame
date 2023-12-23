@@ -1,9 +1,17 @@
 ﻿<engine:UXML xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements">
 	<engine:VisualElement class="row">
 		<engine:VisualElement>
-			<engine:Label text="Character sprite:" class="min_header"/>
-			<engine:VisualElement name="Char_Img" class="char_img">
-				<editor:ObjectField name="Icon_Selection" class="char_selector" allow-scene-objects="false"/>
+			<engine:Label text="Character sprite 1:" class="min_header"/>
+			<engine:VisualElement name="Char_Img_1" class="char_img">
+				<editor:ObjectField name="Icon_Selection_1" class="char_selector" allow-scene-objects="false"/>
+			</engine:VisualElement>
+			<engine:Label text="Character sprite 2:" class="min_header"/>
+			<engine:VisualElement name="Char_Img_2" class="char_img">
+				<editor:ObjectField name="Icon_Selection_2" class="char_selector" allow-scene-objects="false"/>
+			</engine:VisualElement>
+			<engine:Label text="Character sprite 3:" class="min_header"/>
+			<engine:VisualElement name="Char_Img_3" class="char_img">
+				<editor:ObjectField name="Icon_Selection_3" class="char_selector" allow-scene-objects="false"/>
 			</engine:VisualElement>
 			<engine:Label text="Background sprite:" class="min_header"/>
 			<engine:VisualElement name="Back_Img" class="back_img">

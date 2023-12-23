@@ -27,7 +27,7 @@ namespace VNCreator
                     new NodeData
                     {
                         guid = _node.nodeData.guid,
-                        characterSpr = _node.nodeData.characterSpr,
+                        characterSprts = _node.nodeData.characterSprts,
                         characterName = _node.nodeData.characterName,
                         dialogueText = _node.nodeData.dialogueText,
                         backgroundSpr = _node.nodeData.backgroundSpr,

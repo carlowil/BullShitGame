@@ -9,6 +9,7 @@ namespace VNCreator
     {
         public string guid;
         public Sprite characterSpr;
+        public Sprite[] characterSprts = new Sprite[3];
         public string characterName;
         public string dialogueText;
         public Sprite backgroundSpr;

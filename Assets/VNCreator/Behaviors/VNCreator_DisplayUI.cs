@@ -8,45 +8,39 @@ namespace VNCreator
 {
     public class VNCreator_DisplayUI : DisplayBase
     {
-        [Header("Text")]
-        public Text characterNameTxt;
+        [Header("Text")] public Text characterNameTxt;
         public Text dialogueTxt;
+
         [Header("Visuals")]
-        public Image characterImg;
+        // public Image characterImg;
+        public List<Image> characterImgs;
+
         public Image backgroundImg;
-        [Header("Audio")]
-        public AudioSource musicSource;
-        public AudioSource soundEffectSource;
-        [Header("Buttons")]
-        public Button nextBtn;
+        [Header("Buttons")] public Button nextBtn;
         public Button previousBtn;
         public Button saveBtn;
         public Button menuButton;
-        [Header("Choices")]
-        public Button choiceBtn1;
+        [Header("Choices")] public Button choiceBtn1;
         public Button choiceBtn2;
         public Button choiceBtn3;
-        [Header("End")]
-        public GameObject endScreen;
-        [Header("Main menu")]
-        [Scene]
-        public string mainMenu;
+        [Header("End")] public GameObject endScreen;
+        [Header("Main menu")] [Scene] public string mainMenu;
 
         void Start()
         {
             nextBtn.onClick.AddListener(delegate { NextNode(0); });
-            if(previousBtn != null)
+            if (previousBtn != null)
                 previousBtn.onClick.AddListener(Previous);
-            if(saveBtn != null)
+            if (saveBtn != null)
                 saveBtn.onClick.AddListener(Save);
             if (menuButton != null)
                 menuButton.onClick.AddListener(ExitGame);
 
-            if(choiceBtn1 != null)
+            if (choiceBtn1 != null)
                 choiceBtn1.onClick.AddListener(delegate { NextNode(0); });
-            if(choiceBtn2 != null)
+            if (choiceBtn2 != null)
                 choiceBtn2.onClick.AddListener(delegate { NextNode(1); });
-            if(choiceBtn3 != null)
+            if (choiceBtn3 != null)
                 choiceBtn3.onClick.AddListener(delegate { NextNode(2); });
 
             endScreen.SetActive(false);
@@ -69,19 +63,24 @@ namespace VNCreator
         IEnumerator DisplayCurrentNode()
         {
             characterNameTxt.text = currentNode.characterName;
-            if (currentNode.characterSpr != null)
+
+            for (var i = 0; i < currentNode.characterSprts.Length; i++)
             {
-                characterImg.sprite = currentNode.characterSpr;
-                characterImg.color = Color.white;
+                if (currentNode.characterSprts[i] != null)
+                {
+                    characterImgs[i].sprite = currentNode.characterSprts[i];
+                    characterImgs[i].color = Color.white;
+                }
+                else
+                {
+                    characterImgs[i].color = new Color(1, 1, 1, 0);
+                }
             }
-            else
-            {
-                characterImg.color = new Color(1, 1, 1, 0);
-            }
-            if(currentNode.backgroundSpr != null)
+
+            if (currentNode.backgroundSpr != null)
                 backgroundImg.sprite = currentNode.backgroundSpr;
 
-            if (currentNode.choices <= 1) 
+            if (currentNode.choices <= 1)
             {
                 nextBtn.gameObject.SetActive(true);
 
@@ -130,7 +129,7 @@ namespace VNCreator
                 {
                     fullString += _chars[i];
                     dialogueTxt.text = fullString;
-                    yield return new WaitForSeconds(0.01f/ GameOptions.readSpeed);
+                    yield return new WaitForSeconds(0.01f / GameOptions.readSpeed);
                 }
             }
         }

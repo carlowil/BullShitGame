@@ -1,31 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using VNCreator.VNCreator.Data;
-using VNCreator.VNCreator.Misc;
 
-namespace VNCreator.VNCreator.Behaviors
+namespace VNCreator
 {
-    public class VnCreatorEndScreen : MonoBehaviour
+    public class VNCreator_EndScreen : MonoBehaviour
     {
         public Button restartButton;
         public Button mainMenuButton;
         [Scene]
         public string mainMenu;
 
-        private void Start()
+        void Start()
         {
             restartButton.onClick.AddListener(Restart);
             mainMenuButton.onClick.AddListener(MainMenu);
         }
 
-        private static void Restart()
+        void Restart()
         {
             GameSaveManager.NewLoad("MainGame");
             SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
         }
 
-        private void MainMenu()
+        void MainMenu()
         {
             SceneManager.LoadScene(mainMenu, LoadSceneMode.Single);
         }

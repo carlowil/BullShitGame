@@ -1,13 +1,12 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using VNCreator.VNCreator.Data;
-using VNCreator.VNCreator.Misc;
 
-namespace VNCreator.VNCreator.Behaviors
+namespace VNCreator
 {
-    public class VnCreatorDisplayUI : DisplayBase
+    public class VNCreator_DisplayUI : DisplayBase
     {
         [Header("Text")]
         public Text characterNameTxt;
@@ -15,6 +14,9 @@ namespace VNCreator.VNCreator.Behaviors
         [Header("Visuals")]
         public Image characterImg;
         public Image backgroundImg;
+        [Header("Audio")]
+        public AudioSource musicSource;
+        public AudioSource soundEffectSource;
         [Header("Buttons")]
         public Button nextBtn;
         public Button previousBtn;
@@ -30,7 +32,7 @@ namespace VNCreator.VNCreator.Behaviors
         [Scene]
         public string mainMenu;
 
-        private void Start()
+        void Start()
         {
             nextBtn.onClick.AddListener(delegate { NextNode(0); });
             if(previousBtn != null)
@@ -52,7 +54,7 @@ namespace VNCreator.VNCreator.Behaviors
             StartCoroutine(DisplayCurrentNode());
         }
 
-        protected override void NextNode(int choiceId)
+        protected override void NextNode(int _choiceId)
         {
             if (lastNode)
             {
@@ -60,11 +62,11 @@ namespace VNCreator.VNCreator.Behaviors
                 return;
             }
 
-            base.NextNode(choiceId);
+            base.NextNode(_choiceId);
             StartCoroutine(DisplayCurrentNode());
         }
 
-        private IEnumerator DisplayCurrentNode()
+        IEnumerator DisplayCurrentNode()
         {
             characterNameTxt.text = currentNode.characterName;
             if (currentNode.characterSpr != null)
@@ -111,9 +113,9 @@ namespace VNCreator.VNCreator.Behaviors
             }
 
             if (currentNode.backgroundMusic != null)
-                VnCreatorMusicSource.instance.Play(currentNode.backgroundMusic);
+                VNCreator_MusicSource.instance.Play(currentNode.backgroundMusic);
             if (currentNode.soundEffect != null)
-                VnCreatorSfxSource.instance.Play(currentNode.soundEffect);
+                VNCreator_SfxSource.instance.Play(currentNode.soundEffect);
 
             dialogueTxt.text = string.Empty;
             if (GameOptions.isInstantText)
@@ -122,11 +124,11 @@ namespace VNCreator.VNCreator.Behaviors
             }
             else
             {
-                var chars = currentNode.dialogueText.ToCharArray();
-                var fullString = string.Empty;
-                for (var i = 0; i < chars.Length; i++)
+                char[] _chars = currentNode.dialogueText.ToCharArray();
+                string fullString = string.Empty;
+                for (int i = 0; i < _chars.Length; i++)
                 {
-                    fullString += chars[i];
+                    fullString += _chars[i];
                     dialogueTxt.text = fullString;
                     yield return new WaitForSeconds(0.01f/ GameOptions.readSpeed);
                 }
@@ -139,7 +141,7 @@ namespace VNCreator.VNCreator.Behaviors
             StartCoroutine(DisplayCurrentNode());
         }
 
-        private void ExitGame()
+        void ExitGame()
         {
             SceneManager.LoadScene(mainMenu, LoadSceneMode.Single);
         }

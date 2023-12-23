@@ -1,10 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using VNCreator.VNCreator.Data;
 
-namespace VNCreator.VNCreator.Behaviors
+namespace VNCreator
 {
-    public class VnCreatorOptionsMenu : MonoBehaviour
+    public class VNCreator_OptionsMenu : MonoBehaviour
     {
         public Slider musicVolumeSlider;
         public Slider sfxVolumeSlider;
@@ -16,9 +17,9 @@ namespace VNCreator.VNCreator.Behaviors
         public GameObject optionsMenu;
         public GameObject mainMenu;
 
-        private void Start()
+        void Start()
         {
-            GameOptions.InitializeOptions();
+            GameOptions.InitilizeOptions();
 
             if(musicVolumeSlider != null)
             {
@@ -28,7 +29,7 @@ namespace VNCreator.VNCreator.Behaviors
             if (sfxVolumeSlider != null)
             {
                 sfxVolumeSlider.value = GameOptions.sfxVolume;
-                sfxVolumeSlider.onValueChanged.AddListener(GameOptions.SetSfxVolume);
+                sfxVolumeSlider.onValueChanged.AddListener(GameOptions.SetSFXVolume);
             }
             if (readSpeedSlider != null)
             {
@@ -44,7 +45,7 @@ namespace VNCreator.VNCreator.Behaviors
             backButton.onClick.AddListener(Back);
         }
 
-        private void Back()
+        void Back()
         {
             mainMenu.SetActive(true);
             optionsMenu.SetActive(false);

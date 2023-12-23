@@ -1,31 +1,40 @@
-﻿#if UNITY_EDITOR
-#endif
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.UIElements;
+#if UNITY_EDITOR
+using UnityEditor.Experimental.GraphView;
+#endif
 using UnityEngine;
 using UnityEngine.UIElements;
-using VNCreator.VNCreator.Data;
+using System;
+#if UNITY_EDITOR
+using UnityEditor.UIElements;
+#endif
 
-namespace VNCreator.VNCreator.Editor.Graph.Node
+namespace VNCreator
 {
 #if UNITY_EDITOR
-    public class BaseNode : UnityEditor.Experimental.GraphView.Node
+    public class BaseNode : Node
     {
-        public readonly NodeData nodeData;
-        public readonly NodeViewer visuals;
+        public NodeData nodeData;
+        public NodeViewer visuals;
 
-        public BaseNode(NodeData data)
+        public BaseNode(NodeData _data)
         {
-            nodeData = data ?? new NodeData();
+            nodeData = _data != null ? _data : new NodeData();
             visuals = new NodeViewer(this);
         }
     }
 
     public class NodeViewer : VisualElement
     {
-        public NodeViewer(BaseNode node)
+        BaseNode node;
+
+        public NodeViewer(BaseNode _node)
         {
-            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/VNCreator/Editor/Graph/Node/BaseNodeTemplate.uxml");
+            node = _node;
+
+            VisualTreeAsset tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/VNCreator/Editor/Graph/Node/BaseNodeTemplate.uxml");
             tree.CloneTree(this);
 
             styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/VNCreator/Editor/Graph/Node/BaseNodeStyle.uss"));
@@ -33,10 +42,10 @@ namespace VNCreator.VNCreator.Editor.Graph.Node
             VisualElement charSprDisplay = this.Query<VisualElement>("Char_Img");
             charSprDisplay.style.backgroundImage = node.nodeData.characterSpr ? node.nodeData.characterSpr.texture : null;
 
-            var charSprField = this.Query<ObjectField>("Icon_Selection").First();
+            ObjectField charSprField = this.Query<ObjectField>("Icon_Selection").First();
             charSprField.objectType = typeof(Sprite);
             charSprField.value = node.nodeData.characterSpr;
-            charSprField.RegisterCallback<ChangeEvent<Object>>(
+            charSprField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(
                 e =>
                 {
                     node.nodeData.characterSpr = (Sprite)e.newValue;
@@ -63,20 +72,20 @@ namespace VNCreator.VNCreator.Editor.Graph.Node
                 }
             );
 
-            var sfxField = this.Query<ObjectField>("Sound_Field").First();
+            ObjectField sfxField = this.Query<ObjectField>("Sound_Field").First();
             sfxField.objectType = typeof(AudioClip);
             sfxField.value = node.nodeData.soundEffect;
-            sfxField.RegisterCallback<ChangeEvent<Object>>(
+            sfxField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(
                 e =>
                 {
                     node.nodeData.soundEffect = (AudioClip)e.newValue;
                 }
             );
 
-            var musicField = this.Query<ObjectField>("Music_Field").First();
+            ObjectField musicField = this.Query<ObjectField>("Music_Field").First();
             musicField.objectType = typeof(AudioClip);
             musicField.value = node.nodeData.soundEffect;
-            musicField.RegisterCallback<ChangeEvent<Object>>(
+            musicField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(
                 e =>
                 {
                     node.nodeData.backgroundMusic = (AudioClip)e.newValue;
@@ -86,10 +95,10 @@ namespace VNCreator.VNCreator.Editor.Graph.Node
             VisualElement backSprDisplay = this.Query<VisualElement>("Back_Img");
             backSprDisplay.style.backgroundImage = node.nodeData.backgroundSpr ? node.nodeData.backgroundSpr.texture : null;
 
-            var backSprField = this.Query<ObjectField>("Back_Selector").First();
+            ObjectField backSprField = this.Query<ObjectField>("Back_Selector").First();
             backSprField.objectType = typeof(Sprite);
             backSprField.value = node.nodeData.backgroundSpr;
-            backSprField.RegisterCallback<ChangeEvent<Object>>(
+            backSprField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(
                 e =>
                 {
                     node.nodeData.backgroundSpr = (Sprite)e.newValue;

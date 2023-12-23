@@ -1,12 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using VNCreator.VNCreator.Data;
-using VNCreator.VNCreator.Misc;
 
-namespace VNCreator.VNCreator.Behaviors
+namespace VNCreator
 {
-    public class VnCreatorMainMenu : MonoBehaviour
+    public class VNCreator_MainMenu : MonoBehaviour
     {
         [Header("Buttons")]
         public Button newGameBtn;
@@ -22,7 +22,7 @@ namespace VNCreator.VNCreator.Behaviors
         public GameObject optionsMenu;
         public GameObject mainMenu;
 
-        private void Start()
+        void Start()
         {
             if(newGameBtn != null)
                 newGameBtn.onClick.AddListener(NewGame);
@@ -39,25 +39,25 @@ namespace VNCreator.VNCreator.Behaviors
             }
         }
 
-        private void NewGame()
+        void NewGame()
         {
             GameSaveManager.NewLoad("MainGame");
             SceneManager.LoadScene(playScene, LoadSceneMode.Single);
         }
 
-        private void LoadGame()
+        void LoadGame()
         {
             GameSaveManager.currentLoadName = "MainGame";
             SceneManager.LoadScene(playScene, LoadSceneMode.Single);
         }
 
-        private void DisplayOptionsMenu()
+        void DisplayOptionsMenu()
         {
             optionsMenu.SetActive(true);
             mainMenu.SetActive(false);
         }
 
-        private static void Quit()
+        void Quit()
         {
             Application.Quit();
         }

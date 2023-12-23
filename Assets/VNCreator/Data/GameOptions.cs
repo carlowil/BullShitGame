@@ -1,15 +1,17 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace VNCreator.VNCreator.Data
+namespace VNCreator
 {
     public static class GameOptions
     {
         public static float musicVolume = 0.5f;
         public static float sfxVolume = 0.5f;
         public static float readSpeed = 0.5f;
-        public static bool isInstantText;
+        public static bool isInstantText = false;
 
-        public static void InitializeOptions()
+        public static void InitilizeOptions()
         {
             if (PlayerPrefs.HasKey("MusicVolume"))
                 musicVolume = PlayerPrefs.GetFloat("MusicVolume");
@@ -18,7 +20,7 @@ namespace VNCreator.VNCreator.Data
             if (PlayerPrefs.HasKey("ReadSpeed"))
                 readSpeed = PlayerPrefs.GetFloat("ReadSpeed");
             if (PlayerPrefs.HasKey("InstantText"))
-                isInstantText = PlayerPrefs.GetInt("InstantText") == 1;
+                isInstantText = PlayerPrefs.GetInt("InstantText") == 1 ? true : false;
         }
 
         public static void SetMusicVolume(float index)
@@ -27,7 +29,7 @@ namespace VNCreator.VNCreator.Data
             PlayerPrefs.SetFloat("MusicVolume", index);
         }
 
-        public static void SetSfxVolume(float index)
+        public static void SetSFXVolume(float index)
         {
             sfxVolume = index;
             PlayerPrefs.SetFloat("SfxVolume", index);

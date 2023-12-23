@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using VNCreator.VNCreator.Data;
 
-namespace VNCreator.VNCreator.Misc
+namespace VNCreator
 {
     public class DisplayBase : MonoBehaviour
     {
@@ -11,9 +12,9 @@ namespace VNCreator.VNCreator.Misc
         protected NodeData currentNode;
         protected bool lastNode;
 
-        protected List<string> loadList = new();
+        protected List<string> loadList = new List<string>();
 
-        private void Awake()
+        void Awake()
         {
             if (PlayerPrefs.GetString(GameSaveManager.currentLoadName) == string.Empty)
             {
@@ -36,11 +37,11 @@ namespace VNCreator.VNCreator.Misc
             }
         }
 
-        protected virtual void NextNode(int choiceId)
+        protected virtual void NextNode(int _choiceId)
         {
             if (!lastNode) 
             {
-                currentNode = story.GetNextNode(currentNode.guid, choiceId);
+                currentNode = story.GetNextNode(currentNode.guid, _choiceId);
                 lastNode = currentNode.endNode;
                 loadList.Add(currentNode.guid);
             }
@@ -49,7 +50,7 @@ namespace VNCreator.VNCreator.Misc
         protected virtual void Previous()
         {
             loadList.RemoveAt(loadList.Count - 1);
-            currentNode = story.GetCurrentNode(loadList[^1]);
+            currentNode = story.GetCurrentNode(loadList[loadList.Count - 1]);
             lastNode = currentNode.endNode;
         }
 

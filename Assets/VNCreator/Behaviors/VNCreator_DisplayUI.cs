@@ -12,8 +12,7 @@ namespace VNCreator
         public Text dialogueTxt;
 
         [Header("Visuals")]
-        // public Image characterImg;
-        public List<Image> characterImgs;
+        public Image characterImg;
 
         public Image backgroundImg;
         [Header("Buttons")] public Button nextBtn;
@@ -64,18 +63,15 @@ namespace VNCreator
         {
             characterNameTxt.text = currentNode.characterName;
 
-            for (var i = 0; i < currentNode.characterSprts.Length; i++)
-            {
-                if (currentNode.characterSprts[i] != null)
+                if (currentNode.characterSpr != null)
                 {
-                    characterImgs[i].sprite = currentNode.characterSprts[i];
-                    characterImgs[i].color = Color.white;
+                    characterImg.sprite = currentNode.characterSpr;
+                    characterImg.color = Color.white;
                 }
                 else
                 {
-                    characterImgs[i].color = new Color(1, 1, 1, 0);
+                    characterImg.color = new Color(1, 1, 1, 0);
                 }
-            }
 
             if (currentNode.backgroundSpr != null)
                 backgroundImg.sprite = currentNode.backgroundSpr;

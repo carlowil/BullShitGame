@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEditor;
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 #endif
 using UnityEngine.UIElements;
 using VNCreator.Editors.Graph;
@@ -30,6 +31,7 @@ namespace VNCreator
                         backgroundSpr = _node.nodeData.backgroundSpr,
                         startNode = _node.nodeData.startNode,
                         endNode = _node.nodeData.endNode,
+                        nextScene = _node.nodeData.nextScene,
                         choices = _node.nodeData.choices,
                         choiceOptions = _node.nodeData.choiceOptions,
                         nodePosition = _node.GetPosition(),
@@ -37,6 +39,8 @@ namespace VNCreator
                         backgroundMusic = _node.nodeData.backgroundMusic
                     }
                 );
+                Debug.Log(_node.nodeData.backgroundSpr);
+                Debug.Log(_node.nodeData.nextScene);
             }
 
             var edges = _graph.edges.ToList();

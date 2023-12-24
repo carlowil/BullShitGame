@@ -102,6 +102,21 @@ namespace VNCreator
                         node.nodeData.backgroundSpr ? node.nodeData.backgroundSpr.texture : null;
                 }
             );
+
+            if (node.nodeData.endNode)
+            {
+                var elem = new ObjectField("Scene:");
+                elem.style.height = new Length(20, LengthUnit.Pixel);
+                elem.style.width = new Length(300, LengthUnit.Pixel);
+                elem.objectType = typeof(SceneAsset);
+                elem.value = node.nodeData.nextScene;
+                elem.RegisterCallback<ChangeEvent<UnityEngine.Object>>(
+                    e =>
+                    {
+                        node.nodeData.nextScene = (SceneAsset)e.newValue;
+                    });
+                Add(elem);
+            }
         }
     }
 #endif

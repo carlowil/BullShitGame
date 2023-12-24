@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -51,6 +52,12 @@ namespace VNCreator
         {
             if (lastNode)
             {
+                var path = AssetDatabase.GetAssetPath(currentNode.nextScene);
+                
+                Debug.Log(path);
+                
+                SceneManager.LoadScene(path, LoadSceneMode.Single);
+                
                 endScreen.SetActive(true);
                 return;
             }

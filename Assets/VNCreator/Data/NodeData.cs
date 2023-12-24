@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace VNCreator
@@ -14,6 +15,7 @@ namespace VNCreator
         public Sprite backgroundSpr;
         public bool startNode;
         public bool endNode;
+        public SceneAsset nextScene;
         public int choices = 1;
         public List<string> choiceOptions;
         public Rect nodePosition;

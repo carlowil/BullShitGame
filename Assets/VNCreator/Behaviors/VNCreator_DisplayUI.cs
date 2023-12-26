@@ -12,8 +12,7 @@ namespace VNCreator
         [Header("Text")] public Text characterNameTxt;
         public Text dialogueTxt;
 
-        [Header("Visuals")]
-        public Image characterImg;
+        [Header("Visuals")] public Image characterImg;
 
         public Image backgroundImg;
         [Header("Buttons")] public Button nextBtn;
@@ -52,11 +51,17 @@ namespace VNCreator
         {
             if (lastNode)
             {
-                var path = AssetDatabase.GetAssetPath(currentNode.nextScene);
-                
-                SceneManager.LoadScene(path, LoadSceneMode.Single);
-                
-                endScreen.SetActive(true);
+                if (currentNode.nextScene is not null)
+                {
+                    var path = AssetDatabase.GetAssetPath(currentNode.nextScene);
+
+                    SceneManager.LoadScene(path, LoadSceneMode.Single);
+                }
+                else
+                {
+                    endScreen.SetActive(true);
+                }
+
                 return;
             }
 
@@ -68,15 +73,15 @@ namespace VNCreator
         {
             characterNameTxt.text = currentNode.characterName;
 
-                if (currentNode.characterSpr != null)
-                {
-                    characterImg.sprite = currentNode.characterSpr;
-                    characterImg.color = Color.white;
-                }
-                else
-                {
-                    characterImg.color = new Color(1, 1, 1, 0);
-                }
+            if (currentNode.characterSpr != null)
+            {
+                characterImg.sprite = currentNode.characterSpr;
+                characterImg.color = Color.white;
+            }
+            else
+            {
+                characterImg.color = new Color(1, 1, 1, 0);
+            }
 
             if (currentNode.backgroundSpr != null)
                 backgroundImg.sprite = currentNode.backgroundSpr;
@@ -147,7 +152,7 @@ namespace VNCreator
         }
 
         private IEnumerator _coroutine;
-        
+
         private void MyStartCoroutine(IEnumerator routine)
         {
             if (_coroutine != null)

@@ -39,8 +39,6 @@ namespace VNCreator
                         backgroundMusic = _node.nodeData.backgroundMusic
                     }
                 );
-                Debug.Log(_node.nodeData.backgroundSpr);
-                Debug.Log(_node.nodeData.nextScene);
             }
 
             var edges = _graph.edges.ToList();
@@ -96,8 +94,6 @@ namespace VNCreator
 
         void LinkNodes(Port _output, Port _input, ExtendedGraphView _graph)
         {
-            //Debug.Log(_output);
-
             Edge _temp = new Edge
             {
                 output = _output,

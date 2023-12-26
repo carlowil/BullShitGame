@@ -51,7 +51,7 @@ namespace VNCreator
         {
             if (lastNode)
             {
-                if (currentNode.nextScene is not null)
+                if (currentNode.nextScene != null)
                 {
                     var path = AssetDatabase.GetAssetPath(currentNode.nextScene);
 

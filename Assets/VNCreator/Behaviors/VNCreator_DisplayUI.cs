@@ -54,8 +54,6 @@ namespace VNCreator
             {
                 var path = AssetDatabase.GetAssetPath(currentNode.nextScene);
                 
-                Debug.Log(path);
-                
                 SceneManager.LoadScene(path, LoadSceneMode.Single);
                 
                 endScreen.SetActive(true);
